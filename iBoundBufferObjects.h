@@ -16,7 +16,7 @@ public:
 	virtual bool get() = 0;
 
 
-private:
+protected:
 
 	std::condition_variable         m_wait;				/// wait conditional
 	std::mutex                      m_waitMutex;		/// wrapper's mutual exclusion

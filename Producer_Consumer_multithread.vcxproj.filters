@@ -13,54 +13,69 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Source Files\PureVirtual">
+    <Filter Include="Source Files\BoundBufferobjs">
+      <UniqueIdentifier>{d370ff70-34fe-45be-8615-ba54e91a0396}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\BoundBufferobjs\PureVirtual">
       <UniqueIdentifier>{8b942e46-d065-4ac2-b5c0-0e1342ad4b6b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Thead">
+      <UniqueIdentifier>{5dd4815e-84e8-4008-8b2b-9ebc397b431c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Global Objects">
+      <UniqueIdentifier>{c878113d-8f12-4393-97f4-b3f1227dd438}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Types and dataStructs">
+      <UniqueIdentifier>{f4dcc109-cca3-4825-a3e2-0e6056bcab34}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\quickSort - threaded\ThreadScheduler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\quickSort - threaded\ThreadSpool.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="iBoundBufferObjects.cpp">
-      <Filter>Source Files\PureVirtual</Filter>
+      <Filter>Source Files\BoundBufferobjs\PureVirtual</Filter>
     </ClCompile>
     <ClCompile Include="Producer.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\BoundBufferobjs</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadScheduler.cpp">
+      <Filter>Source Files\Thead</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadSpool.cpp">
+      <Filter>Source Files\Thead</Filter>
+    </ClCompile>
+    <ClCompile Include="Timer.cpp">
+      <Filter>Source Files\Global Objects</Filter>
     </ClCompile>
     <ClCompile Include="TrafficDataBase.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Global Objects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\quickSort - threaded\ThreadScheduler.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Fiber.h">
+      <Filter>Source Files\Thead</Filter>
     </ClInclude>
-    <ClInclude Include="..\quickSort - threaded\ThreadSpool.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="ThreadScheduler.h">
+      <Filter>Source Files\Thead</Filter>
     </ClInclude>
-    <ClInclude Include="..\quickSort - threaded\Timer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\quickSort - threaded\Fiber.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DataStructures.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="ThreadSpool.h">
+      <Filter>Source Files\Thead</Filter>
     </ClInclude>
     <ClInclude Include="iBoundBufferObjects.h">
-      <Filter>Header Files</Filter>
+      <Filter>Source Files\BoundBufferobjs\PureVirtual</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.h">
+      <Filter>Source Files\Global Objects</Filter>
     </ClInclude>
     <ClInclude Include="Producer.h">
-      <Filter>Header Files</Filter>
+      <Filter>Source Files\BoundBufferobjs</Filter>
     </ClInclude>
     <ClInclude Include="TrafficDataBase.h">
-      <Filter>Header Files</Filter>
+      <Filter>Source Files\Global Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="DataStructures.h">
+      <Filter>Source Files\Types and dataStructs</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

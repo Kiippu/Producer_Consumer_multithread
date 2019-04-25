@@ -1,30 +1,18 @@
 #pragma once
 #include <chrono>
 #include <map>
+#include "Timer.h"
 
-enum class eMeasermentSet {
-	MS_05,
-	MS_10,
-	MS_15,
-	MS_20,
-	MS_25,
-	MS_30,
-	MS_35,
-	MS_40,
-	MS_45,
-	MS_50,
-	MS_55,
-	MS_60,
-	MS_INVALID = UINT32_MAX
-};
 
 struct TrifficLightData
 {
-	TrifficLightData(eMeasermentSet stamp, unsigned id, unsigned carCount)
+	TrifficLightData(eTimeHour timeID,eMeasermentSet stamp, unsigned id, unsigned carCount)
 	{
 		ID = id;
+		TimeID = timeID;
 		dataPair = std::make_pair(stamp, carCount);
 	}
+	eTimeHour TimeID;
 	unsigned ID;
 	std::pair<eMeasermentSet,unsigned> dataPair;
 };

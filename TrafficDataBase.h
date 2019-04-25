@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include "DataStructures.h"
+#include <memory>
 
 class TrafficDataBaseRaw
 {
@@ -8,11 +9,15 @@ public:
 	TrafficDataBaseRaw();
 	~TrafficDataBaseRaw();
 
-	TrifficLightData get();
+	std::unique_ptr<TrifficLightData> get();
 
-	bool add(TrifficLightData & data) { M_buffer.push_back(std::move(data)); };
+	bool empty();
+	bool max();
+	bool add(std::unique_ptr<TrifficLightData> data);
 
 private:
-	std::vector<TrifficLightData> M_buffer;
+	unsigned m_bufferLimit;
+	unsigned m_maxBufferLimit = 1000;
+	std::vector<std::unique_ptr<TrifficLightData>> m_buffer;
 };
 

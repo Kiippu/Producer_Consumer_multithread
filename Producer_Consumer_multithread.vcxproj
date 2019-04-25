@@ -115,21 +115,22 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\quickSort - threaded\ThreadScheduler.cpp" />
-    <ClCompile Include="..\quickSort - threaded\ThreadSpool.cpp" />
     <ClCompile Include="iBoundBufferObjects.cpp" />
     <ClCompile Include="Producer.cpp" />
     <ClCompile Include="Source.cpp" />
+    <ClCompile Include="ThreadScheduler.cpp" />
+    <ClCompile Include="ThreadSpool.cpp" />
+    <ClCompile Include="Timer.cpp" />
     <ClCompile Include="TrafficDataBase.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\quickSort - threaded\Fiber.h" />
-    <ClInclude Include="..\quickSort - threaded\ThreadScheduler.h" />
-    <ClInclude Include="..\quickSort - threaded\ThreadSpool.h" />
-    <ClInclude Include="..\quickSort - threaded\Timer.h" />
     <ClInclude Include="DataStructures.h" />
+    <ClInclude Include="Fiber.h" />
     <ClInclude Include="iBoundBufferObjects.h" />
     <ClInclude Include="Producer.h" />
+    <ClInclude Include="ThreadScheduler.h" />
+    <ClInclude Include="ThreadSpool.h" />
+    <ClInclude Include="Timer.h" />
     <ClInclude Include="TrafficDataBase.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
