@@ -1,26 +1,27 @@
 #include "Producer.h"
+#include "SimpleEvent.h"
+#include "Timer.h"
 
 
 
-Producer::Producer(TrafficDataBaseRaw& Globalbuffer)
-	: m_globalbuffer(Globalbuffer)
+
+Producer::Producer(TrafficDataBaseRaw& Globalbuffer, SimpleEvent& GlobalEventSystem)
+	: m_globalbuffer(Globalbuffer), m_globalEvents(GlobalEventSystem)
 {
 	m_globalTimer = &Timer::getInstance();
-	m_waitMutex.try_lock();
-	m_localMaxLightID = s_MAX_LIGHT_COUNT;
-	m_nextLightID = s_lightCount;
-	s_lightCount += s_MAX_LIGHT_COUNT;
-	m_waitMutex.unlock();
-
-	for (size_t i = 0; i < m_localMaxLightID; i++)
-	{
-		m_lightID.push_back(m_nextLightID + i);
-	}
+	m_eventID = m_globalEvents.registerEvent("NEW_DATASET",Event([&]() {
+		printf("EVENT: producer of ID: %d\n", getID());
+		if (!m_exit)
+			if (s_lightIDs == s_lightIDsMax)
+				reset();
+	}));
+	printf("Producer of ID:%d created\n", getID());
 }
 
 
 Producer::~Producer()
 {
+	m_globalEvents.removeEvent("NEW_DATASET", m_eventID);
 }
 
 bool Producer::get()
@@ -35,14 +36,25 @@ bool Producer::process()
 	{
 		{
 			// lock this scope
+			if(s_lightIDs == 0)
+				printf("+++ Starting Produce loop\n");
+			if (s_lightIDs == s_lightIDsMax) {
+				printf("+++ Finised production, TrafficDataBaseRaw::list.() == %d \n", m_globalbuffer.size());
+				return true;
+			}
 			produce();
+
 			std::unique_lock<std::mutex> scopedLock(m_waitMutex);
 			// check  exist and exit flag
-			m_wait.wait(scopedLock, [&]() { return m_exit || !m_globalbuffer.empty(); });
+			m_wait.wait(scopedLock, [&]() { return m_exit || (!m_globalbuffer.full() && s_lightIDs < s_lightIDsMax+1); });
 			// double check exit bool
 			if (m_exit)
 				return false;
+			//printf("PRODUCER:%d -- ID:%d -- carCount:%d \n",getID(), m_mostRecentData->ID, m_mostRecentData->dataPair.second);
 			m_globalbuffer.add(std::move(m_mostRecentData));
+			if (m_globalbuffer.size() == 1)
+				m_globalEvents.postEvent("NEW_DATASET_CONSUME");
+			printf("Produced extra data\n");
 		}
 		///repeat
 	}
@@ -55,22 +67,30 @@ bool Producer::busy()
 
 bool Producer::reset()
 {
-	m_nextLightID = 0;
+	s_lightIDs = 0;
+	m_wait.notify_all();
+	return false;
+}
+
+bool Producer::setThreadAtomicBool(bool exit)
+{
 	return false;
 }
 
 bool Producer::produce()
 {
-	std::unique_lock<std::mutex> scopedLock(m_waitMutex);
-	m_wait.wait(scopedLock, [&]() { return m_exit || m_nextLightID != m_localMaxLightID; });
+	{
+		std::unique_lock<std::mutex> scopedLock(m_waitMutex);
+		m_wait.wait(scopedLock, [&]() { return m_exit || !m_globalbuffer.full(); });
+		auto ran = ((time(0) + s_lightIDs)* Timer::getInstance().getElapsed());
+		srand(ran);
+		unsigned carCount = rand() % 1000 + 1;
+		eTimeHour timeID = m_globalTimer->getHour();
+		unsigned lightID = s_lightIDs++;
+		eMeasermentSet setTime = m_globalTimer->getProduceSet();
+		m_mostRecentData.reset();
+		m_mostRecentData = std::make_unique<TrifficLightData>(timeID, setTime, lightID, carCount);
 
-	srand(time(0));
-	unsigned carCount = rand() % 1000 + 1;
-	eTimeHour timeID = m_globalTimer->getHour();
-	unsigned lightID = m_nextLightID;
-	eMeasermentSet setTime = m_globalTimer->getProduceSet();
-	m_mostRecentData = std::make_unique<TrifficLightData>(timeID, setTime, lightID, carCount);
-	
-	m_nextLightID++;
+	}
 	return true;
 }

@@ -1,15 +1,19 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include "Timer.h"
+#include "SimpleEvent.h"
 #include <ctime>
 
 Timer::Timer()
 {
+	m_globalEvents = &SimpleEvent::getInstance();
 	m_beginTimerList = std::make_shared<TIME_REGISTER>();
 	m_finishTimerList = std::make_shared<TIME_REGISTER>();
 	m_finalTimerSheetMs = std::make_shared<TIME_VECTOR>();
 	m_displayNameList = std::make_shared<TIME_DISPLAY_VECTOR_PAIR>();
+	m_elapsedTime = 0;
 
 	addStartTime(eTimeLogType::TT_BEGIN, "Total program runtime");
+	addStartTime(eTimeLogType::TT_DELTA, "Time since last update was competed");
 }
 
 // log start timer
@@ -46,7 +50,7 @@ int64_t & Timer::getDelta()
 
 int64_t & Timer::getElapsed()
 {
-	return m_delta;
+	return m_elapsedTime;
 }
 
 eTimeHour & Timer::getHour()
@@ -65,26 +69,22 @@ bool Timer::update()
 	// set elapsed time
 	auto differenceInTime = now - m_beginTimerList->at(eTimeLogType::TT_BEGIN);
 	m_elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(differenceInTime).count();
-	m_elapsedTime = m_elapsedTime / 1000;
+	//m_elapsedTime = m_elapsedTime + ;
 
 	//set delta
 	differenceInTime = now - m_beginTimerList->at(eTimeLogType::TT_DELTA);
 	m_delta = std::chrono::duration_cast<std::chrono::milliseconds>(differenceInTime).count();
 	m_beginTimerList->at(eTimeLogType::TT_DELTA) = now;
 
-	// realtime VS simulated time
-	if(!DEBUG){
-		auto end = std::chrono::system_clock::now();
-		std::time_t end_time = std::chrono::system_clock::to_time_t(end);
-		auto time = std::ctime(&end_time);
-		std::cout << time[7] << time[8] << std::endl;
-	}
-	else
-	{
-		unsigned min = std::floor(m_elapsedTime) / 60;
-		if (min % 5 == 0)
+	// set new time enum types every 5 and 60 mins
+	unsigned min = std::floor((m_elapsedTime / 1000) / 60) * s_timeMultiplyer; 
+	if (min % 2 == 0) { // normally == 5
+		if (m_currentProduceSet != eMeasermentSet(unsigned(std::floor(min / 2))))
 		{
-			m_currentHour = eTimeHour(min);
+			m_currentProduceSet = eMeasermentSet(unsigned(std::floor(min / 2)));
+			if (min % 60 == 0) // normally == 60
+				m_currentHour = eTimeHour(unsigned(std::floor(min / 60)));
+			m_globalEvents->postEvent("NEW_DATASET");
 		}
 	}
 

@@ -5,12 +5,31 @@
 #include <vector>
 #include <iostream>
 
-const bool DEBUG = true;
+const bool s_DEBUG = false;
+const float s_timeMultiplyer = 1.;
+
+class SimpleEvent;
 
 enum eTimeLogType {
 	TT_BEGIN,
 	TT_NOW,
 	TT_DELTA,
+	TT_CONSUMER_0,
+	TT_CONSUMER_1,
+	TT_CONSUMER_2,
+	TT_CONSUMER_3,
+	TT_CONSUMER_4,
+	TT_CONSUMER_5,
+	TT_CONSUMER_6,
+	TT_CONSUMER_7,
+	TT_PRODUCER_0,
+	TT_PRODUCER_1,
+	TT_PRODUCER_2,
+	TT_PRODUCER_3,
+	TT_PRODUCER_4,
+	TT_PRODUCER_5,
+	TT_PRODUCER_6,
+	TT_PRODUCER_7,
 	TT_LIMIT = 1000,
 	TT_MAX = UINT32_MAX
 };
@@ -101,15 +120,16 @@ public:
 private:
 	Timer();
 
-	eTimeHour m_currentHour;
-	eMeasermentSet m_currentProduceSet;
-	int64_t m_elapsedTime;
-	int64_t m_delta;
+	SimpleEvent*								m_globalEvents;
+	eTimeHour									m_currentHour;
+	eMeasermentSet								m_currentProduceSet;
+	int64_t										m_elapsedTime;
+	int64_t										m_delta;
 
-	std::shared_ptr<TIME_REGISTER> m_beginTimerList;
-	std::shared_ptr<TIME_REGISTER> m_finishTimerList;
-	std::shared_ptr<TIME_VECTOR> m_finalTimerSheetMs;
-	std::shared_ptr<TIME_DISPLAY_VECTOR_PAIR> m_displayNameList;
+	std::shared_ptr<TIME_REGISTER>				m_beginTimerList;
+	std::shared_ptr<TIME_REGISTER>				m_finishTimerList;
+	std::shared_ptr<TIME_VECTOR>				m_finalTimerSheetMs;
+	std::shared_ptr<TIME_DISPLAY_VECTOR_PAIR>	m_displayNameList;
 
 
 };

@@ -28,6 +28,9 @@
     <Filter Include="Source Files\Types and dataStructs">
       <UniqueIdentifier>{f4dcc109-cca3-4825-a3e2-0e6056bcab34}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Utilities">
+      <UniqueIdentifier>{44ab6963-58c5-4ae3-ba51-a6808fcab359}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source.cpp">
@@ -50,6 +53,18 @@
     </ClCompile>
     <ClCompile Include="TrafficDataBase.cpp">
       <Filter>Source Files\Global Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Consumer.cpp">
+      <Filter>Source Files\BoundBufferobjs</Filter>
+    </ClCompile>
+    <ClCompile Include="TrafficDataProcessed.cpp">
+      <Filter>Source Files\Global Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="SimpleEvent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FileSystemHelper.cpp">
+      <Filter>Source Files\Utilities</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -76,6 +91,18 @@
     </ClInclude>
     <ClInclude Include="DataStructures.h">
       <Filter>Source Files\Types and dataStructs</Filter>
+    </ClInclude>
+    <ClInclude Include="Consumer.h">
+      <Filter>Source Files\BoundBufferobjs</Filter>
+    </ClInclude>
+    <ClInclude Include="TrafficDataProcessed.h">
+      <Filter>Source Files\Global Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="SimpleEvent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FileSystemHelper.h">
+      <Filter>Source Files\Utilities</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

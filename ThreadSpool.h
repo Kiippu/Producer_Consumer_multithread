@@ -8,19 +8,6 @@
 	Description:	container and organisation of thread wrappers
 */
 
-/// thread ID
-enum THREAD_ID {
-	ID0,
-	ID1,
-	ID2,
-	ID3,
-	ID4,
-	ID5,
-	ID6,
-	ID7,
-	ID_MAX
-};
-
 class ThreadSpool
 {
 public:

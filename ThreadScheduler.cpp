@@ -3,6 +3,7 @@
 ThreadScheduler::ThreadScheduler()
 {
 	// create unique thread and pass class method as argument
+	m_threadID = s_ID++;
 	m_exit = false;
 	m_masterThread = std::unique_ptr<std::thread>(new std::thread(std::bind(&ThreadScheduler::process, this)));
 }
@@ -17,6 +18,29 @@ ThreadScheduler::~ThreadScheduler()
 	}
 	m_masterThread->join();
 }
+
+unsigned& ThreadScheduler::getID()
+{
+	return m_threadID;
+}
+
+THREAD_TYPE& ThreadScheduler::getOcupation()
+{
+	return m_threadType;
+}
+
+bool ThreadScheduler::setOcupation(THREAD_TYPE type)
+{
+	auto temp = m_threadType;
+	m_threadType = type;
+	return (temp == m_threadType) ? true: false;
+}
+
+void ThreadScheduler::exit()
+{
+	m_exit = true;
+}
+
 
 void ThreadScheduler::addFiber(Fiber task)
 {

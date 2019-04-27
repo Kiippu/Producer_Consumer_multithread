@@ -1,0 +1,71 @@
+
+['UPDATED'][ Sun Apr 28 06:14:22 201 ] "
+
+---------------Data Set Results---------------
+
+Hourly set: 0
+
+	- Light ID: 0
+		- Measurement: 0	Car Count: 254
+
+	- Light ID: 1
+		- Measurement: 0	Car Count: 888
+
+	- Light ID: 2
+		- Measurement: 0	Car Count: 55
+
+	- Light ID: 3
+		- Measurement: 0	Car Count: 221
+
+	- Light ID: 4
+		- Measurement: 0	Car Count: 388
+
+	- Light ID: 5
+		- Measurement: 0	Car Count: 554
+
+	- Light ID: 6
+		- Measurement: 0	Car Count: 976
+
+	- Light ID: 7
+		- Measurement: 0	Car Count: 146
+
+	- Light ID: 8
+		- Measurement: 0	Car Count: 316
+
+	- Light ID: 9
+		- Measurement: 0	Car Count: 983
+
+	- Light ID: 10
+		- Measurement: 0	Car Count: 156
+
+	- Light ID: 11
+		- Measurement: 0	Car Count: 608
+
+	- Light ID: 12
+		- Measurement: 0	Car Count: 298
+
+	- Light ID: 13
+		- Measurement: 0	Car Count: 484
+
+	- Light ID: 14
+		- Measurement: 0	Car Count: 670
+
+	- Light ID: 15
+		- Measurement: 0	Car Count: 856
+
+	- Light ID: 16
+		- Measurement: 0	Car Count: 123
+
+	- Light ID: 17
+		- Measurement: 0	Car Count: 872
+
+	- Light ID: 18
+		- Measurement: 0	Car Count: 101
+
+	- Light ID: 19
+		- Measurement: 0	Car Count: 514
+
+
+---------------Data Set Results---------------
+
+"

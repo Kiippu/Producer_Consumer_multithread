@@ -2,6 +2,7 @@
 #include <chrono>
 #include <map>
 #include "Timer.h"
+#include <algorithm>
 
 
 struct TrifficLightData
@@ -19,18 +20,32 @@ struct TrifficLightData
 
 class TrafficLightResults
 {
+public:
 	TrafficLightResults() {};
 	~TrafficLightResults() {};
-	bool addData(unsigned hour, eMeasermentSet timeStamp, unsigned carCount)
+
+	std::map<unsigned, std::vector<std::pair<eMeasermentSet, unsigned>>> m_dataSet;
+	bool m_isDirty;
+
+	bool addData(unsigned id, std::pair<eMeasermentSet, unsigned> data)
 	{
-		auto set = m_dataSet[hour];
-		auto iter = set.find(timeStamp);
-		if (iter == set.end()) {
-			set.insert(std::make_pair(timeStamp, carCount));
-			return true;
+		auto pairType = data.first;
+		auto pairCount = data.second;
+		auto it = m_dataSet.find(id);
+		if (it != m_dataSet.end())
+		{
+			it->second.push_back(data);
+			std::sort(it->second.begin(), it->second.end(), [](auto &left, auto &right) {
+				return left.second < right.second;
+			});
 		}
-		return false;
+		else {
+			m_dataSet.insert(std::make_pair(id, std::vector<std::pair<eMeasermentSet,unsigned>>()));
+			m_dataSet[id].push_back(data);
+		}
+		//std::map<eMeasermentSet, unsigned> idSet = m_dataSet[id];
+		//idSet[data.first] = data.second;
+		//m_dataSet[id].insert(data);
+		return true;
 	}
-	std::map<unsigned, std::map<eMeasermentSet, unsigned>> m_dataSet;
-	bool isDirty;
 };

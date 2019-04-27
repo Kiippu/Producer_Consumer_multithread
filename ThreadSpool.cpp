@@ -43,7 +43,7 @@ ThreadSpool::ThreadSpool()
 	{
 		if (i == THREAD_ID::ID_MAX)// exit if max is reached by through error
 			break;
-		m_threadPool.insert(std::make_pair(THREAD_ID(i),std::unique_ptr<ThreadScheduler>(new ThreadScheduler)));
+		m_threadPool.insert(std::make_pair(THREAD_ID(i),std::unique_ptr<ThreadScheduler>(new ThreadScheduler())));
 	}
 }
 

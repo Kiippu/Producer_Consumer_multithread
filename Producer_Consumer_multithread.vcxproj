@@ -115,23 +115,31 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Consumer.cpp" />
+    <ClCompile Include="FileSystemHelper.cpp" />
     <ClCompile Include="iBoundBufferObjects.cpp" />
     <ClCompile Include="Producer.cpp" />
+    <ClCompile Include="SimpleEvent.cpp" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="ThreadScheduler.cpp" />
     <ClCompile Include="ThreadSpool.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="TrafficDataBase.cpp" />
+    <ClCompile Include="TrafficDataProcessed.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Consumer.h" />
     <ClInclude Include="DataStructures.h" />
     <ClInclude Include="Fiber.h" />
+    <ClInclude Include="FileSystemHelper.h" />
     <ClInclude Include="iBoundBufferObjects.h" />
     <ClInclude Include="Producer.h" />
+    <ClInclude Include="SimpleEvent.h" />
     <ClInclude Include="ThreadScheduler.h" />
     <ClInclude Include="ThreadSpool.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="TrafficDataBase.h" />
+    <ClInclude Include="TrafficDataProcessed.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
