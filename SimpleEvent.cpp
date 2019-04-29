@@ -41,23 +41,20 @@ void SimpleEvent::process()
 
 unsigned SimpleEvent::registerEvent(const char * name, Event event)
 {
+	std::unique_lock<std::mutex> scopedLock(m_waitMutex);
 	auto it = m_events.find(name);
 	if (it != m_events.end()) 
 	{
-		m_waitMutex.lock();
 		it->second.insert(std::make_pair(it->second.size(),event));
 		unsigned k = it->second.size()-1;
-		m_waitMutex.unlock();
 		return k;
 	}
 	else
 	{
 		auto p = m_events.find(name);
-		m_waitMutex.lock();
 		m_events.insert(std::make_pair(name,std::map<unsigned,Event>()));
 		m_events.find(name)->second.insert(std::make_pair(m_events.find(name)->second.size(), event));
 		unsigned k = m_events.find(name)->second.size() - 1;
-		m_waitMutex.unlock();
 		return k;
 	}
 	return false;
@@ -65,20 +62,18 @@ unsigned SimpleEvent::registerEvent(const char * name, Event event)
 
 void SimpleEvent::removeEvent(const char * name, unsigned id)
 {
+	std::unique_lock<std::mutex> scopedLock(m_waitMutex);
 	auto it = m_events.find(name);
 	if (it != m_events.end())
 	{
-		m_waitMutex.lock();
 		it->second.erase(id);
-		m_waitMutex.unlock();
 	}
 }
 
 bool SimpleEvent::postEvent(const char * name)
 {
-	m_waitMutex.lock();
+	std::unique_lock<std::mutex> scopedLock(m_waitMutex);
 	m_eventsInWait.push_back(name);
-	m_waitMutex.unlock();
 	m_wait.notify_all();
 	return true;
 }

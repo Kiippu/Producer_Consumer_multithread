@@ -4,7 +4,7 @@
 #include "TrafficDataProcessed.h"
 #include "TrafficDataBase.h"
 #include <vector>
-
+static unsigned consumCount = 0;
 class SimpleEvent;
 
 class Consumer :

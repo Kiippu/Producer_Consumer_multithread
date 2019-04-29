@@ -35,6 +35,22 @@ ThreadScheduler * ThreadSpool::get(THREAD_ID id)
 	return nullptr;
 }
 
+unsigned ThreadSpool::getTypeCount(THREAD_TYPE type)
+{
+	unsigned count = 0;
+	for (auto& obj : m_threadPool)
+	{
+		if (obj.second->getOcupation() == type)
+			count++;
+	}
+	return count;
+}
+
+unsigned ThreadSpool::getMaxCount()
+{
+	return m_maxThreadsSupported;
+}
+
 ThreadSpool::ThreadSpool()
 {
 	// get core count and create threadScheduler in placing them in member dictionary

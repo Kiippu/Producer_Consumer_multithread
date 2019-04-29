@@ -23,6 +23,7 @@ WILL NOT REGISTER WITH OUT PERIOD BEFORE EXTENSION
 #include <string>
 #include <vector>
 #include <filesystem>
+#include <mutex>
 
 class FileSystemHelper
 {
@@ -35,6 +36,8 @@ public:
 private:
 	// private constructor to impl singleton
 	FileSystemHelper() {};
+
+	std::mutex                      m_waitMutex;		/// wrapper's mutual exclusion
 
 public:
 	// Safety to delete any copies or new instances
@@ -52,6 +55,9 @@ public:
 	// Write to a file, useful for logs or error msg's
 	void writeToFileAppend(std::string path, std::string filename, std::string extension, std::string stream, bool timeStamp = false, std::string msgType = "");
 
+	std::string getLineInFile(std::string path, std::string filename, std::string extension, unsigned line);
+
+	std::vector<std::string> getMapOfLines(std::string path, std::string filename, std::string extension);
 
 	// TODO: imple this!! depends on JSON or not etc
 	void replaceDataInFile(std::string path, std::string filename, std::string extension, std::string member, std::string data);

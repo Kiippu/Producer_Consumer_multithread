@@ -1,6 +1,7 @@
 #include "TrafficDataProcessed.h"
 #include "FileSystemHelper.h"
 #include "SimpleEvent.h"
+#include <Windows.h>
 
 
 TrafficDataProcessed::~TrafficDataProcessed()
@@ -11,7 +12,7 @@ TrafficDataProcessed::TrafficDataProcessed()
 {
 	SimpleEvent * globalEvents = &SimpleEvent::getInstance();
 	globalEvents->registerEvent("PRINT_DATA",Event([&]() {
-		m_print = true;
+		printResults();
 	}));
 	m_print = false;
 }
@@ -19,6 +20,8 @@ TrafficDataProcessed::TrafficDataProcessed()
 
 bool TrafficDataProcessed::add(std::unique_ptr<TrifficLightData> data)
 {
+	std::unique_lock<std::mutex> scopedLock(m_waitMutex);
+	m_inventoryCount++;
 	auto it = m_buffer.find(data->TimeID);
 	if (it != m_buffer.end())
 	{
@@ -36,11 +39,13 @@ bool TrafficDataProcessed::add(std::unique_ptr<TrifficLightData> data)
 
 std::map<eTimeHour, std::unique_ptr<TrafficLightResults>>& TrafficDataProcessed::get()
 {
+	std::unique_lock<std::mutex> scopedLock(m_waitMutex);
 	return m_buffer;
 }
 
 TrafficLightResults * TrafficDataProcessed::getResults(eTimeHour hour)
 {
+	std::unique_lock<std::mutex> scopedLock(m_waitMutex);
 	auto it = m_buffer.find(hour);
 	if (it == m_buffer.end())
 		return nullptr;
@@ -49,10 +54,14 @@ TrafficLightResults * TrafficDataProcessed::getResults(eTimeHour hour)
 
 bool TrafficDataProcessed::printResults()
 {
+	std::unique_lock<std::mutex> scopedLock(m_waitMutex);
+	printf("PRINTING RESULTS");
 	m_print = false;
 	FileSystemHelper * globalFileHelper = &FileSystemHelper::getInstance();
 
 	globalFileHelper->createFolder("./LightData");
+
+	std::vector<std::string> dataArray;
 
 	std::string data;
 	std::string filename("sortedLightData_");

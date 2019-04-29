@@ -8,7 +8,7 @@ class Timer;
 class SimpleEvent;
 
 static unsigned s_lightIDs = 0;
-static unsigned s_lightIDsMax = 20;
+//static unsigned s_lightIDsMax = 20;
 
 class Producer :
 	public iBoundBufferObjects

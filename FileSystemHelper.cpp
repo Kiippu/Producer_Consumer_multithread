@@ -7,27 +7,30 @@
 #include <ctime>
 #include <iomanip>
 #include <sstream>
+#include <string>
 
 namespace fs = std::experimental::filesystem;
-using namespace std;
 
 
 void FileSystemHelper::createFolder(std::string pathName)
 {
+	std::unique_lock<std::mutex> scopedLock(m_waitMutex);
 	fs::path tempPath{ pathName };
 	fs::create_directories(tempPath);
 }
 
 void FileSystemHelper::removeFolders(std::string pathName)
 {
+	std::unique_lock<std::mutex> scopedLock(m_waitMutex);
 	fs::path tempPath{ pathName };
 	fs::remove_all(tempPath);
 }
 
-vector<string> FileSystemHelper::getDirectoryFiles(const string & dir, const vector<string> & extensions)
+std::vector<std::string> FileSystemHelper::getDirectoryFiles(const std::string & dir, const std::vector<std::string> & extensions)
 {
+	std::unique_lock<std::mutex> scopedLock(m_waitMutex);
 	//temp vector
-	vector<string> files;
+	std::vector<std::string> files;
 	//look thorugh all directories for files with extension
 	for (auto & p : fs::recursive_directory_iterator(dir))
 	{
@@ -47,6 +50,7 @@ vector<string> FileSystemHelper::getDirectoryFiles(const string & dir, const vec
 
 void FileSystemHelper::createFile(std::string path, std::string fileName, std::string extension)
 {
+	std::unique_lock<std::mutex> scopedLock(m_waitMutex);
 	// make path
 	fs::path dir = path;
 	fs::path file_name = fileName;
@@ -59,6 +63,7 @@ void FileSystemHelper::createFile(std::string path, std::string fileName, std::s
 
 void FileSystemHelper::writeToFileAppend(std::string path, std::string filename, std::string extension, std::string stream,bool timeStamp, std::string msgType)
 {
+	std::unique_lock<std::mutex> scopedLock(m_waitMutex);
 	using namespace std::chrono;
 	// make path
 	fs::path dir = path;
@@ -92,27 +97,97 @@ void FileSystemHelper::writeToFileAppend(std::string path, std::string filename,
 		}
 		//if there is no msg and no want timestamp
 		else if(msgType.size() == 0 && timeStamp == false) {
-			out << "\n" << stream;
+			out << stream;
 		}
 	}
 	// if there is not file of that name
 	else {
-		cout << "[\'ERROR\'] { " << file << " } was not opened or found." << endl;
+		std::cout << "[\'ERROR\'] { " << file << " } was not opened or found." << std::endl;
 	}
 	// close file
 	out.close();
-	cout << msgType.size() << endl;
+	//std::cout << msgType.size() << std::endl;
+}
+
+std::string FileSystemHelper::getLineInFile(std::string path, std::string filename, std::string extension, unsigned line = UINT32_MAX)
+{
+	std::unique_lock<std::mutex> scopedLock(m_waitMutex);
+	// make path
+	fs::path dir = path;
+	fs::path file_name = filename;
+	file_name.replace_extension(extension);
+	fs::path fileDir = dir / file_name;
+
+	std::ifstream file;
+	file.open(fileDir);
+	std::string str;
+	std::string file_contents;
+
+	if (file.is_open()) {
+		int line_no = 0;
+		if (line != UINT32_MAX)
+		{
+			while (std::getline(file, str)) {
+				if (line_no == line) {
+					file.close();
+					return str;
+				}
+				++line_no;
+			}
+		}
+		else
+		{
+			std::stringstream buffer;
+			buffer << file.rdbuf();
+			str = buffer.str();
+		}
+	}
+	else
+		printf("File not open");
+
+	file.close();
+	return str;
+}
+
+
+std::vector<std::string> FileSystemHelper::getMapOfLines(std::string path, std::string filename, std::string extension)
+{
+	std::unique_lock<std::mutex> scopedLock(m_waitMutex);
+	// make path
+	fs::path dir = path;
+	fs::path file_name = filename;
+	file_name.replace_extension(extension);
+	fs::path fileDir = dir / file_name;
+
+	std::ifstream file;
+	file.open(fileDir);
+	std::string str;
+	std::string file_contents;
+	std::vector<std::string> list;
+	if (file.is_open()) {
+		int line_no = 0;
+		while (std::getline(file, str)) {
+			list.push_back(str);
+			++line_no;
+		}
+	}
+	else
+		printf("File not open");
+
+	file.close();
+	return list;
 }
 
 void FileSystemHelper::replaceDataInFile(std::string path, std::string filename, std::string extension, std::string member, std::string data)
 {
+	std::unique_lock<std::mutex> scopedLock(m_waitMutex);
 	// make path
 	fs::path dir = path;
 	fs::path file_name = filename + "." + extension;
 	fs::path file = dir / file_name;
 
 	//open in stream
-	ifstream stream;
+	std::ifstream stream;
 	stream.open(file);
 
 	/****************************

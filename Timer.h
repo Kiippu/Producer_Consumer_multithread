@@ -4,9 +4,10 @@
 #include <map>
 #include <vector>
 #include <iostream>
+#include <mutex>
 
 const bool s_DEBUG = false;
-const float s_timeMultiplyer = 1.;
+const float s_timeMultiplyer = 2.;
 
 class SimpleEvent;
 
@@ -110,10 +111,10 @@ public:
 	void addFinishTime(eTimeLogType id);
 	void printFinalTimeSheet();
 
-	int64_t& getDelta();
-	int64_t& getElapsed();
-	eTimeHour& getHour();
-	eMeasermentSet& getProduceSet();
+	int64_t getDelta();
+	int64_t getElapsed();
+	eTimeHour getHour();
+	eMeasermentSet getProduceSet();
 
 	bool update();
 
@@ -125,6 +126,7 @@ private:
 	eMeasermentSet								m_currentProduceSet;
 	int64_t										m_elapsedTime;
 	int64_t										m_delta;
+	std::mutex                      m_waitMutex;		/// wrapper's mutual exclusion
 
 	std::shared_ptr<TIME_REGISTER>				m_beginTimerList;
 	std::shared_ptr<TIME_REGISTER>				m_finishTimerList;

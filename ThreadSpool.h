@@ -2,6 +2,7 @@
 #include <memory>
 #include <map>
 #include "ThreadScheduler.h"
+#include <vector>
 
 /*
 	Class:			ThreadSpool
@@ -29,6 +30,10 @@ public:
 	ThreadScheduler * getAvaliable();
 	/// access a thread by ID
 	ThreadScheduler * get(THREAD_ID);
+
+	unsigned getTypeCount(THREAD_TYPE type);
+
+	unsigned getMaxCount();
 
 private:
 	ThreadSpool();														/// private constructor for singlton

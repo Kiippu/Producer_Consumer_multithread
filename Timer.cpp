@@ -19,6 +19,7 @@ Timer::Timer()
 // log start timer
 void Timer::addStartTime(eTimeLogType eDisplayName, std::string displayName)
 {
+	std::unique_lock<std::mutex> scopedLock(m_waitMutex);
 	m_displayNameList->insert(std::make_pair(eDisplayName, displayName));
 	m_beginTimerList->insert(std::make_pair(eDisplayName, std::chrono::high_resolution_clock::now()));
 	if(eDisplayName > eTimeLogType::TT_LIMIT)
@@ -28,6 +29,7 @@ void Timer::addStartTime(eTimeLogType eDisplayName, std::string displayName)
 void Timer::addFinishTime(eTimeLogType id)
 {
 	//log finish timer
+	std::unique_lock<std::mutex> scopedLock(m_waitMutex);
 	auto finishTimer = std::chrono::high_resolution_clock::now();
 	m_finishTimerList->insert(std::make_pair(id, finishTimer));
 };
@@ -35,6 +37,7 @@ void Timer::addFinishTime(eTimeLogType id)
 void Timer::printFinalTimeSheet()
 {
 	// iterate through all values in timesheet and print them.
+	std::unique_lock<std::mutex> scopedLock(m_waitMutex);
 	for (auto & obj : *m_finalTimerSheetMs)
 	{
 		auto differenceInTime = m_finishTimerList->at(obj.first) - m_beginTimerList->at(obj.first);
@@ -43,28 +46,33 @@ void Timer::printFinalTimeSheet()
 	}
 }
 
-int64_t & Timer::getDelta()
+int64_t Timer::getDelta()
 {
+	std::unique_lock<std::mutex> scopedLock(m_waitMutex);
 	return m_delta;
 }
 
-int64_t & Timer::getElapsed()
+int64_t Timer::getElapsed()
 {
+	std::unique_lock<std::mutex> scopedLock(m_waitMutex);
 	return m_elapsedTime;
 }
 
-eTimeHour & Timer::getHour()
+eTimeHour Timer::getHour()
 {
+	std::unique_lock<std::mutex> scopedLock(m_waitMutex);
 	return m_currentHour;
 }
 
-eMeasermentSet & Timer::getProduceSet()
+eMeasermentSet Timer::getProduceSet()
 {
+	std::unique_lock<std::mutex> scopedLock(m_waitMutex);
 	return m_currentProduceSet;
 }
 
 bool Timer::update()
 {
+	std::unique_lock<std::mutex> scopedLock(m_waitMutex);
 	auto now = std::chrono::high_resolution_clock::now();
 	// set elapsed time
 	auto differenceInTime = now - m_beginTimerList->at(eTimeLogType::TT_BEGIN);
@@ -81,10 +89,11 @@ bool Timer::update()
 	if (min % 2 == 0) { // normally == 5
 		if (m_currentProduceSet != eMeasermentSet(unsigned(std::floor(min / 2))))
 		{
+			m_globalEvents->postEvent("NEW_DATASET");
+			m_globalEvents->postEvent("BEGIN_PRODUCE");
 			m_currentProduceSet = eMeasermentSet(unsigned(std::floor(min / 2)));
 			if (min % 60 == 0) // normally == 60
 				m_currentHour = eTimeHour(unsigned(std::floor(min / 60)));
-			m_globalEvents->postEvent("NEW_DATASET");
 		}
 	}
 
