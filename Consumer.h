@@ -23,12 +23,12 @@ public:
 	bool consume();
 
 private:
-	Timer * m_globalTimer;
-	SimpleEvent&						m_globalEvents;
-	TrafficDataBaseRaw&					m_globalbuffer_raw;
-	TrafficDataProcessed&				m_globalbuffer_processed;
-	std::unique_ptr<TrifficLightData>	m_mostRecentData;
-	unsigned							m_eventID;
+	Timer *								m_globalTimer;				/// global timer 
+	SimpleEvent&						m_globalEvents;				/// global events
+	TrafficDataBaseRaw&					m_globalbuffer_raw;			/// global buffer to consume from
+	TrafficDataProcessed&				m_globalbuffer_processed;	/// global buffer to place consumed
+	std::unique_ptr<TrifficLightData>	m_mostRecentData;			/// most recent picked data
+	unsigned							m_eventID;					/// this objects event ID - used when removing attached events
 
 
 };

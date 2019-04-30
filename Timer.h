@@ -9,8 +9,10 @@
 const bool s_DEBUG = false;
 const float s_timeMultiplyer = 2.;
 
+/// forward declaration
 class SimpleEvent;
 
+/// timer logging types/ID's
 enum eTimeLogType {
 	TT_BEGIN,
 	TT_NOW,
@@ -34,7 +36,7 @@ enum eTimeLogType {
 	TT_LIMIT = 1000,
 	TT_MAX = UINT32_MAX
 };
-
+/// posible times i a day 24hr
 enum eTimeHour
 {
 	TH_00,
@@ -64,7 +66,7 @@ enum eTimeHour
 	TH_24,
 	TH_INVALID
 };
-
+/// measurement data sets
 enum eMeasermentSet {
 	MS_05,
 	MS_10,
@@ -107,28 +109,34 @@ public:
 	void operator=(Timer const&temp) = delete;
 	~Timer() {};
 
+	/// register start timer
 	void addStartTime(eTimeLogType eDisplayName, std::string displayName);
+	/// registe finish of timer
 	void addFinishTime(eTimeLogType id);
+	/// print all timers that have finished so far
 	void printFinalTimeSheet();
-
+	/// get master delta
 	int64_t getDelta();
+	/// get master elapsed time 
 	int64_t getElapsed();
+	/// get hour - used in prototype for frealtime data seat generator @update()
 	eTimeHour getHour();
+	/// get measurment - used in prototype for frealtime data seat generator @update()
 	eMeasermentSet getProduceSet();
-
+	/// master update for timers
 	bool update();
 
 private:
 	Timer();
 
-	SimpleEvent*								m_globalEvents;
-	eTimeHour									m_currentHour;
-	eMeasermentSet								m_currentProduceSet;
-	int64_t										m_elapsedTime;
-	int64_t										m_delta;
-	std::mutex                      m_waitMutex;		/// wrapper's mutual exclusion
+	SimpleEvent*								m_globalEvents;			/// global events
+	eTimeHour									m_currentHour;			/// hour
+	eMeasermentSet								m_currentProduceSet;	/// meaurment type
+	int64_t										m_elapsedTime;			/// master time elapsed
+	int64_t										m_delta;				/// master delta time
+	std::mutex									m_waitMutex;			/// wrapper's mutual exclusion
 
-	std::shared_ptr<TIME_REGISTER>				m_beginTimerList;
+	std::shared_ptr<TIME_REGISTER>				m_beginTimerList;		/// time lists/maps
 	std::shared_ptr<TIME_REGISTER>				m_finishTimerList;
 	std::shared_ptr<TIME_VECTOR>				m_finalTimerSheetMs;
 	std::shared_ptr<TIME_DISPLAY_VECTOR_PAIR>	m_displayNameList;

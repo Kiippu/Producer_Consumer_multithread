@@ -4,7 +4,7 @@
 #include "Timer.h"
 #include <algorithm>
 
-
+/// staring struct fr data
 struct TrifficLightData
 {
 	TrifficLightData(eTimeHour timeID,eMeasermentSet stamp, unsigned id, unsigned carCount)
@@ -18,6 +18,7 @@ struct TrifficLightData
 	std::pair<eMeasermentSet,unsigned> dataPair;
 };
 
+/// final class of data  after consuming
 class TrafficLightResults
 {
 public:
@@ -26,7 +27,7 @@ public:
 
 	std::map<unsigned, std::vector<std::pair<eMeasermentSet, unsigned>>> m_dataSet;
 	bool m_isDirty;
-
+	/// add data to obj
 	bool addData(unsigned id, std::pair<eMeasermentSet, unsigned> data)
 	{
 		auto pairType = data.first;
@@ -43,9 +44,6 @@ public:
 			m_dataSet.insert(std::make_pair(id, std::vector<std::pair<eMeasermentSet,unsigned>>()));
 			m_dataSet[id].push_back(data);
 		}
-		//std::map<eMeasermentSet, unsigned> idSet = m_dataSet[id];
-		//idSet[data.first] = data.second;
-		//m_dataSet[id].insert(data);
 		return true;
 	}
 };

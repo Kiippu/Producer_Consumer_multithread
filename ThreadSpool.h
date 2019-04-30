@@ -30,10 +30,12 @@ public:
 	ThreadScheduler * getAvaliable();
 	/// access a thread by ID
 	ThreadScheduler * get(THREAD_ID);
-
+	/// get coiunt of all type
 	unsigned getTypeCount(THREAD_TYPE type);
-
+	/// get max thread count
 	unsigned getMaxCount();
+	/// clean up threads
+	void cleanUpThreads();
 
 private:
 	ThreadSpool();														/// private constructor for singlton

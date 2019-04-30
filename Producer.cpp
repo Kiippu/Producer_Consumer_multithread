@@ -35,29 +35,25 @@ bool Producer::get()
 
 bool Producer::process()
 {
-	// infinate loop to call and run tasks
+	// infinate loop to call and run producer
 	while (true)
 	{
 		{
 			// lock this scope
-			// check  exist and exit flag
 			if (m_globalbuffer.full())
 				return false;
 			// double check exit bool
 			if (m_exit) {
 				return false;
 			}
-			//printf("PRODUCER:%d -- ID:%d -- carCount:%d \n",getID(), m_mostRecentData->ID, m_mostRecentData->dataPair.second);
+
 			produce();
 			if (m_mostRecentData != nullptr) {
 				m_globalbuffer.add(std::move(m_mostRecentData));
-				//m_globalEvents.postEvent("NEW_DATASET_CONSUME");
 			}
 			m_mostRecentData = nullptr;
-			/*if (m_globalbuffer.size() == 1)
-				m_globalEvents.postEvent("NEW_DATASET_CONSUME");*/
 		}
-		UpdateDelta();
+		UpdateDelta();												// update elapsed timer
 		///repeat
 	}
 }
@@ -75,11 +71,6 @@ bool Producer::reset()
 	return false;
 }
 
-bool Producer::setThreadAtomicBool(bool exit)
-{
-	return false;
-}
-
 bool Producer::produce()
 {
 	{
@@ -88,23 +79,20 @@ bool Producer::produce()
 			std::unique_lock<std::mutex> scopedLock(m_waitMutex);
 			m_wait.wait(scopedLock, [&]() { return m_exit || !m_globalbuffer.full(); });
 
-			if (s_lightIDs < s_lines.size())
+			if (s_lightIDs < s_lines.size())			// get next line
 				line = s_lines[s_lightIDs++];
-
-			if (s_lightIDs == s_lines.size())
-				int k = 0;
-
 		}
-		if (line.empty()) 
+		if (line.empty())								// leave it empty buffer
 		{
 			m_exit = true;
 			return false;
 		}
 
+		/// data parseing from string
 		auto foundText = line.find('#');
 		std::string text;
 		if (++foundText != std::string::npos)
-			while (line[foundText] != '-')
+			while (line[foundText] != '-')				// get ID
 			{
 				text += line[foundText];
 				foundText++;
@@ -114,7 +102,7 @@ bool Producer::produce()
 		text.clear();
 		foundText = line.find(':');
 		if (++foundText != std::string::npos)
-			while (line[foundText] != '[')
+			while (line[foundText] != '[')				// get measurment
 			{
 				text += line[foundText];
 				foundText++;
@@ -124,28 +112,19 @@ bool Producer::produce()
 		text.clear();
 		foundText = line.find('[');
 		if (++foundText != std::string::npos)
-			while (line[foundText] != ']')
+			while (line[foundText] != ']')				// get Car count
 			{
 				text += line[foundText];
 				foundText++;
 			}
 		unsigned carCount = std::stoi(text);
 
-
-		//auto ran = ((time(0) + s_lightIDs) * Timer::getInstance().getElapsed());
-		//srand(ran);
-		//unsigned carCount = rand() % 1000 + 1;
 		eTimeHour timeID = m_globalTimer->getHour();
-		//m_waitMutex.lock();
-		//unsigned lightID = s_lightIDs++;
-		//m_waitMutex.unlock();
-		//eMeasermentSet setTime = m_globalTimer->getProduceSet();
 		{
 			std::unique_lock<std::mutex> scopedLock(m_waitMutex);
 			m_mostRecentData.reset();
-			m_mostRecentData = std::make_unique<TrifficLightData>(timeID, setTime, lightID, carCount);
+			m_mostRecentData = std::make_unique<TrifficLightData>(timeID, setTime, lightID, carCount);	// create ptr to add later
 		}
-
 	}
 	return true;
 }

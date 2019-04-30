@@ -15,7 +15,7 @@ std::unique_ptr<TrifficLightData> TrafficDataBaseRaw::get()
 		}
 		else {
 			m_bufferLimit--;
-			auto result = std::move(m_buffer[0]);
+			auto result = std::move(m_buffer[0]);		// get data then remove map iter
 			if (!m_buffer.empty())
 				m_buffer.erase(m_buffer.begin());
 			return std::move(result);

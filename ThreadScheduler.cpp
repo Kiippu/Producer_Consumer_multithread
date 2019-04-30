@@ -6,6 +6,7 @@ ThreadScheduler::ThreadScheduler()
 	m_threadID = s_ID++;
 	m_exit = false;
 	m_masterThread = std::unique_ptr<std::thread>(new std::thread(std::bind(&ThreadScheduler::process, this)));
+	printf("thread with ID:%d Created\n", m_threadID);
 }
 
 ThreadScheduler::~ThreadScheduler()
@@ -17,6 +18,7 @@ ThreadScheduler::~ThreadScheduler()
 		m_wait.notify_one();
 	}
 	m_masterThread->join();
+	printf("thread with ID:%d destroyed\n", m_threadID);
 }
 
 unsigned& ThreadScheduler::getID()
@@ -38,7 +40,9 @@ bool ThreadScheduler::setOcupation(THREAD_TYPE type)
 
 void ThreadScheduler::exit()
 {
+	std::lock_guard<std::mutex> lock(m_waitMutex);
 	m_exit = true;
+	m_wait.notify_one();
 }
 
 
@@ -70,7 +74,7 @@ void ThreadScheduler::process()
 			// double check exit bool
 			if (m_exit)
 				return;
-			// run the task and remove it from the list
+			// run the task and remove it from the list - Fiber's
 			m_taskBoard.front().run();
 			m_taskBoard.pop_front();
 		}

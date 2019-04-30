@@ -51,6 +51,16 @@ unsigned ThreadSpool::getMaxCount()
 	return m_maxThreadsSupported;
 }
 
+void ThreadSpool::cleanUpThreads()
+{
+	for (size_t i = m_threadPool.size(); i >= 0 ; i--)
+	{
+		auto thread = std::move(m_threadPool[THREAD_ID(i)]);
+		//m_threadPool.erase(THREAD_ID(i));
+		//thread->exit();
+	}
+}
+
 ThreadSpool::ThreadSpool()
 {
 	// get core count and create threadScheduler in placing them in member dictionary
@@ -59,7 +69,7 @@ ThreadSpool::ThreadSpool()
 	{
 		if (i == THREAD_ID::ID_MAX)// exit if max is reached by through error
 			break;
-		m_threadPool.insert(std::make_pair(THREAD_ID(i),std::unique_ptr<ThreadScheduler>(new ThreadScheduler())));
+		m_threadPool.insert(std::make_pair(THREAD_ID(i),std::make_unique<ThreadScheduler>()));
 	}
 }
 

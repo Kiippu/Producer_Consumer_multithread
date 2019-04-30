@@ -60,10 +60,10 @@
     <ClCompile Include="TrafficDataProcessed.cpp">
       <Filter>Source Files\Global Objects</Filter>
     </ClCompile>
-    <ClCompile Include="SimpleEvent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="FileSystemHelper.cpp">
+      <Filter>Source Files\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="SimpleEvent.cpp">
       <Filter>Source Files\Utilities</Filter>
     </ClCompile>
   </ItemGroup>
@@ -98,10 +98,10 @@
     <ClInclude Include="TrafficDataProcessed.h">
       <Filter>Source Files\Global Objects</Filter>
     </ClInclude>
-    <ClInclude Include="SimpleEvent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="FileSystemHelper.h">
+      <Filter>Source Files\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="SimpleEvent.h">
       <Filter>Source Files\Utilities</Filter>
     </ClInclude>
   </ItemGroup>

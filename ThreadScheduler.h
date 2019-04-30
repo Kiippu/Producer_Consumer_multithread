@@ -28,6 +28,7 @@ enum THREAD_ID {
 	ID_MAX
 };
 
+/// thread type/uses
 enum THREAD_TYPE {
 	GENERAL,
 	PRODUCER,
@@ -51,8 +52,9 @@ public:
 	unsigned& getID();
 	///get/set thread type
 	THREAD_TYPE& getOcupation();
+	/// get job ID
 	bool setOcupation(THREAD_TYPE type);
-
+	/// exit thread
 	void exit();
 
 

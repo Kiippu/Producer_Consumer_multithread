@@ -1,6 +1,6 @@
 #include "SimpleEvent.h"
 
-
+/// similar structure to my threadScheduler.h
 
 SimpleEvent::SimpleEvent()
 {

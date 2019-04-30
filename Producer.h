@@ -7,8 +7,7 @@
 class Timer;
 class SimpleEvent;
 
-static unsigned s_lightIDs = 0;
-//static unsigned s_lightIDsMax = 20;
+static unsigned s_lightIDs = 0; // lights created counter
 
 class Producer :
 	public iBoundBufferObjects
@@ -23,21 +22,16 @@ public:
 	bool busy();
 	bool reset();
 
-	bool setThreadAtomicBool(bool exit);
-
 	///class specific
 	bool produce();
 
 
 private:
-	Timer*								m_globalTimer;
-	TrafficDataBaseRaw&					m_globalbuffer;
-	SimpleEvent&						m_globalEvents;
-	std::unique_ptr<TrifficLightData>	m_mostRecentData;
-	std::vector<unsigned>				m_lightID;
-	unsigned							m_nextLightID;
-	unsigned							m_localMaxLightID;
-	unsigned							m_eventID;
+	Timer*								m_globalTimer;		/// global timer
+	TrafficDataBaseRaw&					m_globalbuffer;		/// glboal data set buffer
+	SimpleEvent&						m_globalEvents;		/// global events
+	std::unique_ptr<TrifficLightData>	m_mostRecentData;	/// most recet data to be placed in buffer
+	unsigned							m_eventID;			/// objects ID to be used when removaling attached events
 
 };
 

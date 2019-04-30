@@ -54,9 +54,9 @@ public:
 	void createFile(std::string path ,std::string fileName, std::string extension);
 	// Write to a file, useful for logs or error msg's
 	void writeToFileAppend(std::string path, std::string filename, std::string extension, std::string stream, bool timeStamp = false, std::string msgType = "");
-
+	// get a line in the file
 	std::string getLineInFile(std::string path, std::string filename, std::string extension, unsigned line);
-
+	// get all lines in file in a vector
 	std::vector<std::string> getMapOfLines(std::string path, std::string filename, std::string extension);
 
 	// TODO: imple this!! depends on JSON or not etc
