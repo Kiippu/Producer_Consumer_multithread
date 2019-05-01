@@ -62,7 +62,7 @@ int main()
 		std::shared_ptr<Producer> pro = std::make_shared<Producer>(*buffer_raw, *globalEvents);
 		unsigned id = pro->getID();
 		producerList.insert(std::make_pair(id, pro));
-		threadProducer->addFiber(Fiber([&producerList, id]() { while (producerList[id]->process()) {}; producerList.erase(id); }));
+		threadProducer->addFiber(Fiber([&producerList, id]() { producerList[id]->process();}));
 		threadProducer->setOcupation(THREAD_TYPE::PRODUCER);
 	}
 
@@ -85,17 +85,19 @@ int main()
 			unsigned consumerCount = globalThreadPool->getTypeCount(THREAD_TYPE::CONSUMER);
 			unsigned producerCount = globalThreadPool->getTypeCount(THREAD_TYPE::PRODUCER);
 			unsigned threadMax = globalThreadPool->getMaxCount();
-
+			
 			/// find average elapsed time for each stage
 			for (auto& prod : producerList)						// current producer list
 			{
-				if (prod.second->getDelta() > 0)
-					averageProducerTime = ((averageProducerTime + prod.second->getDelta()) / 2);
+				if(prod.second)
+					if (prod.second->getDelta() > 0)
+						averageProducerTime = ((averageProducerTime + prod.second->getDelta()) / 2);
 			}
 			for (auto& cons : consumerList )					// current consumer list
 			{
-				if (cons.second->getDelta() > 0)
-					averageConsumerTime = ((averageConsumerTime + cons.second->getDelta()) / 2);
+				if (cons.second)
+					if (cons.second->getDelta() > 0)
+						averageConsumerTime = ((averageConsumerTime + cons.second->getDelta()) / 2);
 			}
 
 			if (currentState >= dataCount - 1)
@@ -103,7 +105,7 @@ int main()
 			/// create new producer or not?
 			if ((float(averageConsumerTime / averageProducerTime) <= 1.) || (currentState < dataCount-1))
 			{
-				if (size < limit)									// produced vs required to produce
+				if (size < limit && producerList.size() < 5)									// produced vs required to produce
 				{
 					if (producerCount < (startingThreadCount - 2))	// producer count vs max thread count
 						if (auto threadProducer = ThreadSpool::getInstance().getAvaliable()) {
@@ -111,7 +113,7 @@ int main()
 							unsigned id = pro->getID();
 							producerList.insert(std::make_pair(id, pro));
 							/// looped producer method and if it finish it signs it has finished and safe to destro/ erase
-							threadProducer->addFiber(Fiber([&producerList, id]() { while (producerList[id]->process()) {}; producerList[id]->exitedThread(); }));
+							threadProducer->addFiber(Fiber([&producerList, id, &threadProducer]() { producerList[id]->process();}));
 							threadProducer->setOcupation(THREAD_TYPE::PRODUCER);
 						}
 				}
@@ -119,24 +121,25 @@ int main()
 					averageProducerTime = 0.0001;
 			}
 			/// remove producer with elapsed timer || end buffer set || no consumers currently created 
-			else if (float(averageConsumerTime / averageProducerTime  > 1.2 || (currentState >= dataCount - 1)) || consumerList.size() == 0)
+			//else if (float(averageConsumerTime / averageProducerTime  > 1.2 || (currentState >= dataCount - 1)) || consumerList.size() == 0)
 			{
-				std::unique_lock<std::mutex> scopedLock(waitMutex);
-				bool removal = false;
-				for (auto &obj : producerList)				// remove signaled finishe threads over any others
-				{
-					if (obj.second->hasExited()) {
-						producerList.erase(obj.first);
-						removal = true;
-						break;
-					}
-				}
-				if (!removal) {								// remove any if none have signalled finished
-					auto it = producerList.begin();
-					if (it != producerList.end())
-						if (it->second != nullptr)
-							it->second->exit();
-				}
+				//std::unique_lock<std::mutex> scopedLock(waitMutex);
+				//bool removal = false;
+				//for (auto &obj : producerList)				// remove signaled finishe threads over any others
+				//{
+				//	if (obj.second->hasExited()) {
+				//		//auto boundItem = std::move(obj.second);
+				//		//producerList.erase(obj.first);
+				//		//removal = true;
+				//		//break;
+				//	}
+				//}
+				//if (!removal) {								// remove any if none have signalled finished
+				//	auto it = producerList.begin();
+				//	if (it != producerList.end())
+				//		if (it->second != nullptr)
+				//			it->second->exit();
+				//}
 			}
 			/// create consumers  - average timer in favor || buffer size hits a limit || no consumers exist 
 			if (float(averageProducerTime / averageConsumerTime) < 1. || size > dataCount/3 || size == dataCount || consumerList.size() == 0)
@@ -149,7 +152,7 @@ int main()
 							unsigned id = con->getID();
 							consumerList.insert(std::make_pair(id, con));
 
-							threadConsumer->addFiber(Fiber([&consumerList, id]() { while (consumerList[id]->process()) {}; }));
+							threadConsumer->addFiber(Fiber([&consumerList, id]() { consumerList[id]->process(); }));
 							threadConsumer->setOcupation(THREAD_TYPE::CONSUMER);
 						}
 				}
@@ -163,9 +166,9 @@ int main()
 		}
 
 	}
-	printf("MAIN THREAD FINISHED!\n");
+	printf("\nMAIN THREAD FINISHED!\n");
 	/// time to clean up; before main thread exits
+	globalEvents->exit();
 	globalThreadPool->cleanUpThreads();
-	Sleep(2000);
 	return 0;
 }

@@ -51,6 +51,8 @@ public:
 	/// call event
 	bool postEvent(const char*);
 
+	void exit();
+
 
 private:
 	SimpleEvent();

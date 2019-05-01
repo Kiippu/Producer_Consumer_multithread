@@ -53,7 +53,8 @@ unsigned ThreadSpool::getMaxCount()
 
 void ThreadSpool::cleanUpThreads()
 {
-	for (size_t i = m_threadPool.size(); i >= 0 ; i--)
+	//ThreadSpool::getInstance().get(THREAD_ID::ID0)->exit();
+	for (size_t i = 0; i < m_threadPool.size(); i++)
 	{
 		auto thread = std::move(m_threadPool[THREAD_ID(i)]);
 		//m_threadPool.erase(THREAD_ID(i));

@@ -67,7 +67,7 @@ bool Producer::reset()
 {
 	std::unique_lock<std::mutex> scopedLock(m_waitMutex);
 	s_lightIDs = 0;
-	m_wait.notify_all();
+	m_wait.notify_one();
 	return false;
 }
 

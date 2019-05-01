@@ -15,7 +15,7 @@ Consumer::Consumer(TrafficDataBaseRaw& globalbuffer_raw, TrafficDataProcessed& g
 	/// event to trigger consume if waiting
 	m_eventID = m_globalEvents.registerEvent("NEW_DATASET_CONSUME", Event([&]() {
 		if(!m_exit)
-			m_wait.notify_all();
+			m_wait.notify_one();
 	}));
 	printf("Consumer of ID:%d created\n", s_activeObjects);
 }

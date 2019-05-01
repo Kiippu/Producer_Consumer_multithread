@@ -74,6 +74,15 @@ bool SimpleEvent::postEvent(const char * name)
 {
 	std::unique_lock<std::mutex> scopedLock(m_waitMutex);
 	m_eventsInWait.push_back(name);
-	m_wait.notify_all();
+	m_wait.notify_one();
 	return true;
+}
+
+void SimpleEvent::exit()
+{
+	{
+	//std::unique_lock<std::mutex> scopedLock(m_waitMutex);
+	m_exit = true;
+	m_wait.notify_one();
+	}
 }
